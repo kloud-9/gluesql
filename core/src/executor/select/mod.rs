@@ -24,7 +24,7 @@ use {
     },
     async_recursion::async_recursion,
     futures::stream::{self, StreamExt, TryStream, TryStreamExt},
-    std::{borrow::Cow, iter, rc::Rc},
+    std::{borrow::Cow, iter, sync::Arc as Rc},
     utils::Vector,
 };
 
@@ -105,8 +105,8 @@ fn sort_stateless(rows: Vec<Result<Row>>, order_by: &[OrderByExpr]) -> Result<Ve
     Ok(sorted)
 }
 
-#[async_recursion(?Send)]
-pub async fn select_with_labels<'a, T: GStore>(
+#[async_recursion]
+pub async fn select_with_labels<'a, T: GStore + std::marker::Sync>(
     storage: &'a T,
     query: &'a Query,
     filter_context: Option<Rc<RowContext<'a>>>,

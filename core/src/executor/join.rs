@@ -15,7 +15,7 @@ use {
         stream::{self, empty, once, Stream, StreamExt, TryStream, TryStreamExt},
     },
     itertools::Itertools,
-    std::{borrow::Cow, collections::HashMap, pin::Pin, rc::Rc},
+    std::{borrow::Cow, collections::HashMap, pin::Pin, sync::Arc as Rc},
     utils::OrStream,
 };
 

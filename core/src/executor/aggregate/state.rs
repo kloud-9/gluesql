@@ -8,7 +8,7 @@ use {
     },
     im_rc::{HashMap, HashSet},
     itertools::Itertools,
-    std::{cmp::Ordering, rc::Rc},
+    std::{cmp::Ordering, sync::Arc as Rc},
     utils::{IndexMap, Vector},
 };
 

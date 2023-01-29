@@ -12,7 +12,7 @@ use {
     },
     futures::stream::{self, StreamExt, TryStreamExt},
     serde::Serialize,
-    std::{fmt::Debug, rc::Rc},
+    std::{fmt::Debug, sync::Arc as Rc},
     thiserror::Error as ThisError,
 };
 

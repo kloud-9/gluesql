@@ -1,6 +1,6 @@
 use {
     crate::data::{Row, Value},
-    std::{borrow::Cow, fmt::Debug, rc::Rc},
+    std::{borrow::Cow, fmt::Debug, sync::Arc as Rc},
 };
 
 #[derive(Debug)]

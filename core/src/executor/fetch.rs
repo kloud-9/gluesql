@@ -15,7 +15,7 @@ use {
     iter_enum::Iterator,
     itertools::Itertools,
     serde::Serialize,
-    std::{borrow::Cow, fmt::Debug, rc::Rc},
+    std::{borrow::Cow, fmt::Debug, sync::Arc as Rc},
     thiserror::Error as ThisError,
 };
 
@@ -360,7 +360,7 @@ pub async fn fetch_columns<T: GStore>(
     Ok(columns)
 }
 
-#[async_recursion(?Send)]
+#[async_recursion]
 pub async fn fetch_relation_columns<T: GStore>(
     storage: &T,
     table_factor: &TableFactor,

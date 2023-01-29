@@ -10,7 +10,7 @@ use {
     futures::stream::{self, Stream, StreamExt, TryStreamExt},
     im_rc::HashMap,
     serde::Serialize,
-    std::{borrow::Cow, cmp::Ordering, fmt::Debug, rc::Rc},
+    std::{borrow::Cow, cmp::Ordering, fmt::Debug, sync::Arc as Rc},
     thiserror::Error as ThisError,
     utils::Vector,
 };

@@ -7,7 +7,7 @@ use {
     },
     im_rc::HashSet,
     serde::Serialize,
-    std::{fmt::Debug, rc::Rc},
+    std::{fmt::Debug, sync::Arc as Rc},
     thiserror::Error as ThisError,
     utils::Vector,
 };

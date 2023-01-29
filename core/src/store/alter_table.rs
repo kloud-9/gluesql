@@ -30,7 +30,7 @@ pub enum AlterTableError {
     SchemalessTableFound(String),
 }
 
-#[async_trait(?Send)]
+#[async_trait]
 pub trait AlterTable {
     async fn rename_schema(&mut self, _table_name: &str, _new_table_name: &str) -> Result<()> {
         let msg = "[Storage] AlterTable::rename_schema is not supported".to_owned();

@@ -1,7 +1,7 @@
 use {
     crate::{data::Value, result::Result},
     serde::Serialize,
-    std::{collections::HashMap, fmt::Debug, rc::Rc},
+    std::{collections::HashMap, fmt::Debug, sync::Arc as Rc},
     thiserror::Error,
 };
 

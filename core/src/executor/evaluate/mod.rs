@@ -19,12 +19,12 @@ use {
         stream::{self, StreamExt, TryStreamExt},
     },
     im_rc::HashMap,
-    std::{borrow::Cow, rc::Rc},
+    std::{borrow::Cow, sync::Arc as Rc},
 };
 
 pub use {error::EvaluateError, evaluated::Evaluated, stateless::evaluate_stateless};
 
-#[async_recursion(?Send)]
+#[async_recursion]
 pub async fn evaluate<'a, 'b: 'a, 'c: 'a, T: GStore>(
     storage: &'a T,
     context: Option<Rc<RowContext<'b>>>,

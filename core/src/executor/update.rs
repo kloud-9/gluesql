@@ -11,7 +11,7 @@ use {
     },
     futures::stream::{self, StreamExt, TryStreamExt},
     serde::Serialize,
-    std::{borrow::Cow, fmt::Debug, rc::Rc},
+    std::{borrow::Cow, fmt::Debug, sync::Arc as Rc},
     thiserror::Error,
     utils::HashMapExt,
 };

@@ -21,13 +21,15 @@ cfg_if! {
     }
 }
 
+use std::marker::{Send, Sync};
+
 cfg_if! {
     if #[cfg(feature = "index")] {
         pub trait GStore: Store + Index {}
         impl<S: Store + Index> GStore for S {}
     } else {
-        pub trait GStore: Store {}
-        impl<S: Store> GStore for S {}
+        pub trait GStore: Store + Send + Sync {}
+        impl<S: Store + Send + Sync> GStore for S {}
     }
 }
 
@@ -54,8 +56,8 @@ cfg_if! {
         pub trait GStoreMut: StoreMut + Transaction {}
         impl<S: StoreMut + Transaction> GStoreMut for S {}
     } else {
-        pub trait GStoreMut: StoreMut {}
-        impl<S: StoreMut> GStoreMut for S {}
+        pub trait GStoreMut: StoreMut + Send + Sync {}
+        impl<S: StoreMut + Send + Sync> GStoreMut for S {}
     }
 }
 
@@ -73,7 +75,7 @@ use {
 pub type RowIter = Box<dyn Iterator<Item = Result<(Key, DataRow)>>>;
 
 /// By implementing `Store` trait, you can run `SELECT` query.
-#[async_trait(?Send)]
+#[async_trait]
 pub trait Store {
     async fn fetch_schema(&self, table_name: &str) -> Result<Option<Schema>>;
 
@@ -86,7 +88,7 @@ pub trait Store {
 
 /// By implementing `StoreMut` trait,
 /// you can run `INSERT`, `CREATE TABLE`, `DELETE`, `UPDATE` and `DROP TABLE` queries.
-#[async_trait(?Send)]
+#[async_trait]
 pub trait StoreMut {
     async fn insert_schema(&mut self, schema: &Schema) -> Result<()>;
 

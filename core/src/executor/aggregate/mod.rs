@@ -16,7 +16,7 @@ use {
     },
     async_recursion::async_recursion,
     futures::stream::{self, StreamExt, TryStream, TryStreamExt},
-    std::{convert::identity, rc::Rc},
+    std::{convert::identity, sync::Arc as Rc},
 };
 
 pub use error::AggregateError;
@@ -189,7 +189,7 @@ impl<'a, T: GStore> Aggregator<'a, T> {
     }
 }
 
-#[async_recursion(?Send)]
+#[async_recursion]
 async fn aggregate<'a, T: GStore>(
     state: State<'a, T>,
     filter_context: Option<Rc<RowContext<'a>>>,

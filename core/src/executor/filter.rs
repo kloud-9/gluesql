@@ -7,7 +7,7 @@ use {
         store::GStore,
     },
     im_rc::HashMap,
-    std::rc::Rc,
+    std::sync::Arc as Rc,
 };
 
 pub struct Filter<'a, T: GStore> {

@@ -18,7 +18,7 @@ use {
     },
     futures::stream::{StreamExt, TryStreamExt},
     serde::{Deserialize, Serialize},
-    std::{collections::HashMap, env::var, fmt::Debug, rc::Rc},
+    std::{collections::HashMap, env::var, fmt::Debug, sync::Arc as Rc},
     thiserror::Error as ThisError,
 };
 
