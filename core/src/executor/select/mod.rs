@@ -105,7 +105,7 @@ fn sort_stateless(rows: Vec<Result<Row>>, order_by: &[OrderByExpr]) -> Result<Ve
     Ok(sorted)
 }
 
-#[async_recursion]
+// #[async_recursion]
 pub async fn select_with_labels<'a, T: GStore + std::marker::Sync>(
     storage: &'a T,
     query: &'a Query,
@@ -114,6 +114,10 @@ pub async fn select_with_labels<'a, T: GStore + std::marker::Sync>(
     Option<Vec<String>>,
     impl TryStream<Ok = Row, Error = Error, Item = Result<Row>> + 'a,
 )> {
+    let rows = stream::iter(vec![]);
+
+    Ok((None, rows))
+    /*
     let Select {
         from: table_with_joins,
         selection: where_clause,
@@ -204,6 +208,7 @@ pub async fn select_with_labels<'a, T: GStore + std::marker::Sync>(
     let labels = labels.map(|labels| labels.iter().cloned().collect());
 
     Ok((labels, rows))
+        */
 }
 
 pub async fn select<'a, T: GStore>(

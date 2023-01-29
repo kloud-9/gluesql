@@ -24,13 +24,15 @@ use {
 
 pub use {error::EvaluateError, evaluated::Evaluated, stateless::evaluate_stateless};
 
-#[async_recursion]
+// #[async_recursion]
 pub async fn evaluate<'a, 'b: 'a, 'c: 'a, T: GStore>(
     storage: &'a T,
     context: Option<Rc<RowContext<'b>>>,
     aggregated: Option<Rc<HashMap<&'c Aggregate, Value>>>,
     expr: &'a Expr,
 ) -> Result<Evaluated<'a>> {
+    panic!();
+    /*
     let eval = |expr| {
         let context = context.as_ref().map(Rc::clone);
         let aggregated = aggregated.as_ref().map(Rc::clone);
@@ -269,6 +271,7 @@ pub async fn evaluate<'a, 'b: 'a, 'c: 'a, T: GStore>(
                 .map(Evaluated::from)
         }
     }
+*/
 }
 
 async fn evaluate_function<'a, 'b: 'a, 'c: 'a, T: GStore>(

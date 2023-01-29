@@ -189,12 +189,14 @@ impl<'a, T: GStore> Aggregator<'a, T> {
     }
 }
 
-#[async_recursion]
+// #[async_recursion]
 async fn aggregate<'a, T: GStore>(
     state: State<'a, T>,
     filter_context: Option<Rc<RowContext<'a>>>,
     expr: &'a Expr,
 ) -> Result<State<'a, T>> {
+    panic!();
+    /*
     let aggr = |state, expr| aggregate(state, filter_context.as_ref().map(Rc::clone), expr);
 
     match expr {
@@ -241,6 +243,7 @@ async fn aggregate<'a, T: GStore>(
         Expr::Aggregate(aggr) => state.accumulate(filter_context, aggr.as_ref()).await,
         _ => Ok(state),
     }
+    */
 }
 
 fn check(expr: &Expr) -> bool {
