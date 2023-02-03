@@ -11,13 +11,13 @@ use {
     std::sync::Arc as Rc,
 };
 
-pub struct Project<'a, T: GStore> {
+pub struct Project<'a, T: GStore + Send + Sync> {
     storage: &'a T,
     context: Option<Rc<RowContext<'a>>>,
     fields: &'a [SelectItem],
 }
 
-impl<'a, T: GStore> Project<'a, T> {
+impl<'a, T: GStore + Send + Sync> Project<'a, T> {
     pub fn new(
         storage: &'a T,
         context: Option<Rc<RowContext<'a>>>,

@@ -28,14 +28,14 @@ pub enum UpdateError {
     ConflictOnSchema,
 }
 
-pub struct Update<'a, T: GStore> {
+pub struct Update<'a, T: GStore + Send + Sync> {
     storage: &'a T,
     table_name: &'a str,
     fields: &'a [Assignment],
     column_defs: Option<&'a [ColumnDef]>,
 }
 
-impl<'a, T: GStore> Update<'a, T> {
+impl<'a, T: GStore + Send + Sync> Update<'a, T> {
     pub fn new(
         storage: &'a T,
         table_name: &'a str,

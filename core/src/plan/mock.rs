@@ -37,7 +37,7 @@ pub struct MockStorage {
     schema_map: HashMap<String, Schema>,
 }
 
-#[async_trait(?Send)]
+#[async_trait]
 impl Store for MockStorage {
     async fn fetch_all_schemas(&self) -> Result<Vec<Schema>> {
         let msg = "[Storage] fetch_all_schemas not supported".to_owned();
@@ -71,7 +71,7 @@ impl Store for MockStorage {
     }
 }
 
-#[async_trait(?Send)]
+#[async_trait]
 impl StoreMut for MockStorage {
     async fn insert_schema(&mut self, schema: &Schema) -> Result<()> {
         let table_name = schema.table_name.clone();

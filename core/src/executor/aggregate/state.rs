@@ -149,7 +149,7 @@ impl AggrValue {
     }
 }
 
-pub struct State<'a, T: GStore> {
+pub struct State<'a, T: GStore + Send + Sync> {
     storage: &'a T,
     index: usize,
     group: Group,
@@ -158,7 +158,7 @@ pub struct State<'a, T: GStore> {
     contexts: Vector<Rc<RowContext<'a>>>,
 }
 
-impl<'a, T: GStore> State<'a, T> {
+impl<'a, T: GStore + Send + Sync> State<'a, T> {
     pub fn new(storage: &'a T) -> Self {
         State {
             storage,

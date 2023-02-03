@@ -18,7 +18,7 @@ use {
     },
 };
 
-pub async fn alter_table<T: GStore + GStoreMut>(
+pub async fn alter_table<T: GStore + GStoreMut + Send + Sync>(
     storage: &mut T,
     table_name: &str,
     operation: &AlterTableOperation,

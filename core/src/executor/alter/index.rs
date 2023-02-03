@@ -10,7 +10,7 @@ use {
     },
 };
 
-pub async fn create_index<T: GStore + GStoreMut>(
+pub async fn create_index<T: GStore + GStoreMut + Send + Sync>(
     storage: &mut T,
     table_name: &str,
     index_name: &str,

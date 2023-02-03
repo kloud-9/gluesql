@@ -23,13 +23,13 @@ pub enum SortError {
     Unreachable,
 }
 
-pub struct Sort<'a, T: GStore> {
+pub struct Sort<'a, T: GStore + Send + Sync> {
     storage: &'a T,
     context: Option<Rc<RowContext<'a>>>,
     order_by: &'a [OrderByExpr],
 }
 
-impl<'a, T: GStore> Sort<'a, T> {
+impl<'a, T: GStore + Send + Sync> Sort<'a, T> {
     pub fn new(
         storage: &'a T,
         context: Option<Rc<RowContext<'a>>>,

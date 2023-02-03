@@ -34,7 +34,7 @@ pub enum FetchError {
     TooManyColumnAliases(String, usize, usize),
 }
 
-pub async fn fetch<'a, T: GStore>(
+pub async fn fetch<'a, T: GStore + Send + Sync>(
     storage: &'a T,
     table_name: &'a str,
     columns: Option<Rc<[String]>>,
@@ -81,7 +81,7 @@ pub enum Rows<I1, I2, I3, I4> {
     Dictionary(I4),
 }
 
-pub async fn fetch_relation_rows<'a, T: GStore>(
+pub async fn fetch_relation_rows<'a, T: GStore + Send + Sync>(
     storage: &'a T,
     table_factor: &'a TableFactor,
     filter_context: &Option<Rc<RowContext<'a>>>,
@@ -361,7 +361,7 @@ pub async fn fetch_columns<T: GStore>(
 }
 
 #[async_recursion]
-pub async fn fetch_relation_columns<T: GStore>(
+pub async fn fetch_relation_columns<T: GStore + Send + Sync>(
     storage: &T,
     table_factor: &TableFactor,
 ) -> Result<Option<Vec<String>>> {
@@ -475,7 +475,7 @@ pub async fn fetch_relation_columns<T: GStore>(
     }
 }
 
-async fn fetch_join_columns<'a, T: GStore>(
+async fn fetch_join_columns<'a, T: GStore + Send + Sync>(
     storage: &T,
     joins: &'a [Join],
 ) -> Result<Option<Vec<(&'a String, Vec<String>)>>> {
@@ -495,7 +495,7 @@ async fn fetch_join_columns<'a, T: GStore>(
     Ok((columns.len() == joins.len()).then_some(columns))
 }
 
-pub async fn fetch_labels<T: GStore>(
+pub async fn fetch_labels<T: GStore + Send + Sync>(
     storage: &T,
     relation: &TableFactor,
     joins: &[Join],

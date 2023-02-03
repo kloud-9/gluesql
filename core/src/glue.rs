@@ -15,11 +15,11 @@ use {
     },
 };
 
-pub struct Glue<T: GStore + GStoreMut> {
+pub struct Glue<T: GStore + GStoreMut + Send + Sync> {
     pub storage: T,
 }
 
-impl<T: GStore + GStoreMut> Glue<T> {
+impl<T: GStore + GStoreMut + Send + Sync> Glue<T> {
     pub fn new(storage: T) -> Self {
         Self { storage }
     }

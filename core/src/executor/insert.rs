@@ -45,7 +45,7 @@ enum RowsData {
     Insert(Vec<(Key, DataRow)>),
 }
 
-pub async fn insert<T: GStore + GStoreMut>(
+pub async fn insert<T: GStore + GStoreMut + Send + Sync>(
     storage: &mut T,
     table_name: &str,
     columns: &[String],
@@ -83,7 +83,7 @@ pub async fn insert<T: GStore + GStoreMut>(
     }
 }
 
-async fn fetch_vec_rows<T: GStore>(
+async fn fetch_vec_rows<T: GStore + Send + Sync>(
     storage: &T,
     table_name: &str,
     column_defs: Vec<ColumnDef>,
@@ -174,7 +174,10 @@ async fn fetch_vec_rows<T: GStore>(
     }
 }
 
-async fn fetch_map_rows<T: GStore>(storage: &T, source: &Query) -> Result<Vec<DataRow>> {
+async fn fetch_map_rows<T: GStore + Send + Sync>(
+    storage: &T,
+    source: &Query,
+) -> Result<Vec<DataRow>> {
     #[derive(futures_enum::Stream)]
     enum Rows<I1, I2> {
         Values(I1),

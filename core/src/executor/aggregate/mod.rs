@@ -14,12 +14,14 @@ use {
         result::{Error, Result},
         store::GStore,
     },
-    async_recursion::async_recursion,
     futures::stream::{self, StreamExt, TryStream, TryStreamExt},
     std::{convert::identity, sync::Arc as Rc},
 };
 
+use std::pin::Pin;
+
 pub use error::AggregateError;
+use futures::Future;
 
 pub struct Aggregator<'a, T: GStore> {
     storage: &'a T,
@@ -35,7 +37,7 @@ enum Stream<T1, T2> {
     Aggregate(T2),
 }
 
-impl<'a, T: GStore> Aggregator<'a, T> {
+impl<'a, T: GStore + Send + Sync> Aggregator<'a, T> {
     pub fn new(
         storage: &'a T,
         fields: &'a [SelectItem],
@@ -189,61 +191,59 @@ impl<'a, T: GStore> Aggregator<'a, T> {
     }
 }
 
-// #[async_recursion]
-async fn aggregate<'a, T: GStore>(
+fn aggregate<'a, T: GStore + Send + Sync>(
     state: State<'a, T>,
     filter_context: Option<Rc<RowContext<'a>>>,
     expr: &'a Expr,
-) -> Result<State<'a, T>> {
-    panic!();
-    /*
-    let aggr = |state, expr| aggregate(state, filter_context.as_ref().map(Rc::clone), expr);
+) -> Pin<Box<dyn Future<Output = Result<State<'a, T>>> + 'a>> {
+    Box::pin(async move {
+        let aggr = |state, expr| aggregate(state, filter_context.as_ref().map(Rc::clone), expr);
 
-    match expr {
-        Expr::Between {
-            expr, low, high, ..
-        } => {
-            stream::iter([expr, low, high])
-                .fold(
-                    Ok(state),
-                    |state, expr| async move { aggr(state?, expr).await },
-                )
-                .await
-        }
-        Expr::BinaryOp { left, right, .. } => {
-            stream::iter([left, right])
-                .fold(
-                    Ok(state),
-                    |state, expr| async move { aggr(state?, expr).await },
-                )
-                .await
-        }
-        Expr::UnaryOp { expr, .. } => aggr(state, expr).await,
-        Expr::Nested(expr) => aggr(state, expr).await,
-        Expr::Case {
-            operand,
-            when_then,
-            else_result,
-        } => {
-            let operand = std::iter::once(operand.as_ref())
-                .filter_map(|operand| operand.map(|operand| &**operand));
-            let when_then = when_then
-                .iter()
-                .flat_map(|(when, then)| std::iter::once(when).chain(std::iter::once(then)));
-            let else_result = std::iter::once(else_result.as_ref())
-                .filter_map(|else_result| else_result.map(|else_result| &**else_result));
+        match expr {
+            Expr::Between {
+                expr, low, high, ..
+            } => {
+                stream::iter([expr, low, high])
+                    .fold(
+                        Ok(state),
+                        |state, expr| async move { aggr(state?, expr).await },
+                    )
+                    .await
+            }
+            Expr::BinaryOp { left, right, .. } => {
+                stream::iter([left, right])
+                    .fold(
+                        Ok(state),
+                        |state, expr| async move { aggr(state?, expr).await },
+                    )
+                    .await
+            }
+            Expr::UnaryOp { expr, .. } => aggr(state, expr).await,
+            Expr::Nested(expr) => aggr(state, expr).await,
+            Expr::Case {
+                operand,
+                when_then,
+                else_result,
+            } => {
+                let operand = std::iter::once(operand.as_ref())
+                    .filter_map(|operand| operand.map(|operand| &**operand));
+                let when_then = when_then
+                    .iter()
+                    .flat_map(|(when, then)| std::iter::once(when).chain(std::iter::once(then)));
+                let else_result = std::iter::once(else_result.as_ref())
+                    .filter_map(|else_result| else_result.map(|else_result| &**else_result));
 
-            stream::iter(operand.chain(when_then).chain(else_result))
-                .fold(
-                    Ok(state),
-                    |state, expr| async move { aggr(state?, expr).await },
-                )
-                .await
+                stream::iter(operand.chain(when_then).chain(else_result))
+                    .fold(
+                        Ok(state),
+                        |state, expr| async move { aggr(state?, expr).await },
+                    )
+                    .await
+            }
+            Expr::Aggregate(aggr) => state.accumulate(filter_context, aggr.as_ref()).await,
+            _ => Ok(state),
         }
-        Expr::Aggregate(aggr) => state.accumulate(filter_context, aggr.as_ref()).await,
-        _ => Ok(state),
-    }
-    */
+    })
 }
 
 fn check(expr: &Expr) -> bool {

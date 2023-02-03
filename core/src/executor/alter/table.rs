@@ -16,7 +16,7 @@ use {
     },
 };
 
-pub async fn create_table<T: GStore + GStoreMut>(
+pub async fn create_table<T: GStore + GStoreMut + Send + Sync>(
     storage: &mut T,
     target_table_name: &str,
     column_defs: &[ColumnDef],
@@ -143,7 +143,7 @@ pub async fn create_table<T: GStore + GStoreMut>(
     }
 }
 
-pub async fn drop_table<T: GStore + GStoreMut>(
+pub async fn drop_table<T: GStore + GStoreMut + Send + Sync>(
     storage: &mut T,
     table_names: &[String],
     if_exists: bool,

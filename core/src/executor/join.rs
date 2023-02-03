@@ -19,7 +19,7 @@ use {
     utils::OrStream,
 };
 
-pub struct Join<'a, T: GStore> {
+pub struct Join<'a, T: GStore + Send + Sync> {
     storage: &'a T,
     join_clauses: &'a [AstJoin],
     filter_context: Option<Rc<RowContext<'a>>>,
@@ -29,7 +29,7 @@ type JoinItem<'a> = Rc<RowContext<'a>>;
 type Joined<'a> =
     Pin<Box<dyn TryStream<Ok = JoinItem<'a>, Error = Error, Item = Result<JoinItem<'a>>> + 'a>>;
 
-impl<'a, T: GStore> Join<'a, T> {
+impl<'a, T: GStore + Send + Sync> Join<'a, T> {
     pub fn new(
         storage: &'a T,
         join_clauses: &'a [AstJoin],
@@ -59,7 +59,7 @@ impl<'a, T: GStore> Join<'a, T> {
     }
 }
 
-async fn join<'a, T: GStore>(
+async fn join<'a, T: GStore + Send + Sync>(
     storage: &'a T,
     filter_context: Option<Rc<RowContext<'a>>>,
     ast_join: &'a AstJoin,
@@ -214,7 +214,7 @@ enum JoinExecutor<'a> {
 }
 
 impl<'a> JoinExecutor<'a> {
-    async fn new<T: GStore>(
+    async fn new<T: GStore + Send + Sync>(
         storage: &'a T,
         relation: &TableFactor,
         filter_context: Option<Rc<RowContext<'a>>>,
@@ -273,7 +273,7 @@ impl<'a> JoinExecutor<'a> {
     }
 }
 
-async fn check_where_clause<'a, 'b, T: GStore>(
+async fn check_where_clause<'a, 'b, T: GStore + Send + Sync>(
     storage: &'a T,
     table_alias: &'a str,
     filter_context: Option<Rc<RowContext<'a>>>,

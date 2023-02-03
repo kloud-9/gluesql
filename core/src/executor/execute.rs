@@ -75,7 +75,7 @@ pub enum PayloadVariable {
 }
 
 #[cfg(feature = "transaction")]
-pub async fn execute_atomic<T: GStore + GStoreMut>(
+pub async fn execute_atomic<T: GStore + GStoreMut + Send + Sync>(
     storage: &mut T,
     statement: &Statement,
 ) -> Result<Payload> {
@@ -103,7 +103,7 @@ pub async fn execute_atomic<T: GStore + GStoreMut>(
     }
 }
 
-pub async fn execute<T: GStore + GStoreMut>(
+pub async fn execute<T: GStore + GStoreMut + Send + Sync>(
     storage: &mut T,
     statement: &Statement,
 ) -> Result<Payload> {
