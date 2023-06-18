@@ -30,7 +30,7 @@ mod hello_world {
         */
         let queries = "
             CREATE TABLE greet (name TEXT);
-            INSERT INTO greet VALUES ('World');
+            INSERT INTO greet VALUES ('GlueSQL');
         ";
 
         glue.execute(queries).await.expect("Execution failed");
@@ -64,7 +64,7 @@ mod hello_world {
             value => panic!("Unexpected type: {:?}", value),
         };
 
-        println!("Hello {}!", to_greet); // Will always output "Hello World!"
+        println!("Hello {}!", to_greet); // Will always output "Hello GlueSQL!"
     }
 }
 
